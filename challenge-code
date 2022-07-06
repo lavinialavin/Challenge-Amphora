@@ -1,0 +1,31 @@
+#Install packages to import data sets from .csv files
+install.packages("readr")
+library(readr)
+#Install packages to import .vcf files
+install.packages("vcfR")
+library(vcfR)
+install.packages("data.table")
+library(data.table)
+#Set working directory and import.csv
+setwd("~/Desktop/Ejemplos R/Genomica/Challenge")
+files<- list.files(pattern = ".csv")
+temp<- lapply(files, fread, sep=",")
+data <- rbindlist(temp, fill = TRUE)
+write.csv(data, file="", row.names=F)
+#Import .vcf files form working directory
+setwd("~/Desktop/Ejemplos R/Genomica/Challenge")
+files<- list.files(pattern = ".vcf")
+vcf1<- lapply(files, fread, sep=",")
+vcf <- rbindlist(vcf1, fill = TRUE)
+read.vcfR(vcf, file="", row.names=FALSE)
+#combine data sets .csv and .vcf in one file
+data_set<- rbind(data, vcf, fill=TRUE)
+data_set
+#input template with population codes
+coor<-read_tsv("coordination.txt")
+#merge data set with coor that contains population origin and merged data_set object created earlier
+df<-rbind(data_set, coor, fill=TRUE)
+#Export data frame (df) in new file to attach in new object 
+library("readr")
+write_csv(df, path = "df.csv")
+
