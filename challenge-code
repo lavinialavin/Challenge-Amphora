@@ -28,4 +28,30 @@ df<-rbind(data_set, coor, fill=TRUE)
 #Export data frame (df) in new file to attach in new object 
 library("readr")
 write_csv(df, path = "df.csv")
+#Call libraries to perform k-mean cluster
+install.packages("stats")
+install.packages("dplyr")
+install.packages("gglopt2")
+install.packages("ggfortify")
+library(stats)
+library(dplyr)
+library(ggplot2)
+library(ggfortify)
+View(df)
+#determine the number of columns used for clusters 
+mydata = select(df,c(1, 2, 3, 4, 5, 6, 7))
+View(mydata)
+
+#wssplot plot generated to illustrate the number of cluster needed for data base 
+wssplot<-function(df, nc=15 , seed=1234)
+{
+  wss<-(nrow(data)-1)*sum(apply(data,2,var))
+  for (i in 2:nc){
+    set.seed(seed)
+    wss[i]<-sum(kmeans(data, centers=i)$withinss)}
+  plot(1:nc, wss, type="b", xlab="Number of clusters", ylab="Within groups sum of squares")
+}
+#plot to know the number of cluster following the trend in the graph
+wssplot(mydata)
+
 
